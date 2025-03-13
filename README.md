@@ -1,8 +1,3 @@
-## sbt project compiled with Scala 3
-
-### Usage
-
-This is a normal sbt project. You can compile code with `sbt compile`, run it with `sbt run`, and `sbt console` will start a Scala 3 REPL.
-
-For more information on the sbt-dotty plugin, see the
-[scala3-example-project](https://github.com/scala/scala3-example-project/blob/main/README.md).
+# Celestial Body Gravity Simulator (N-body simulation)
+ 
+This n-body simulation will focus on simulating gravitational forces on n-objects on a 2D-plane. It will provide an interactive GUI that users can change features and visualize the simulations. The project will use parallel and concurrent structures to optimize and hopefully improve performance of the simulations on simulations with large amounts of bodies. 
