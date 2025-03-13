@@ -8,5 +8,14 @@ lazy val root = project
 
     scalaVersion := scala3Version,
 
-    libraryDependencies += "org.scalameta" %% "munit" % "1.0.0" % Test
+    libraryDependencies += "org.scalameta" %% "munit" % "1.0.0" % Test,
+
+    // scalafx
+    libraryDependencies += "org.scalafx" %% "scalafx" % "21.0.0-R32",
+
+    // adding java runtime options
+    javaOptions ++= Seq(
+      "--module-path", "D:/MUIC/openjfx-23.0.2_windows-x64_bin-sdk/javafx-sdk-23.0.2/lib",
+      "--add-modules", "javafx.controls,javafx.fxml"
+    )
   )
