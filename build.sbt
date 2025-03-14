@@ -15,7 +15,7 @@ lazy val root = project
 
     // adding java runtime options
     javaOptions ++= Seq(
-      "--module-path", "D:/MUIC/openjfx-23.0.2_windows-x64_bin-sdk/javafx-sdk-23.0.2/lib",
+      "--module-path", "D:/MUIC/openjfx-21.0.6_windows-x64_bin-sdk/javafx-sdk-21.0.6/lib",
       "--add-modules", "javafx.controls,javafx.fxml"
     )
   )
