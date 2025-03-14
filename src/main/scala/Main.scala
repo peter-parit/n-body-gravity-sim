@@ -10,8 +10,8 @@ object Main extends JFXApp3 {
       title = "N-Body Gravity Simulation"
 
       // set screen properties
-      width = 1200 
-      height = 900
+      width = 800
+      height = 600
       maximized = false
       resizable = false
       
@@ -19,7 +19,6 @@ object Main extends JFXApp3 {
         root = new StackPane {
           // set container's background to black
           style = "-fx-background-color: Black;"
-          children = new Label("Testing ScalaFX")
         }
       }
     }
