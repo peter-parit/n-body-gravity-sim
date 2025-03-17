@@ -5,14 +5,14 @@ import scalafx.scene.input.KeyCode.Minus
 class Body(var x: Double, var y: Double, var mass: Double, val radius: Double) {
 
     var vx: Double = 0.0
-    var vy: Double = 5.0
+    var vy: Double = 0.0
     var ax: Double = 0.0
     var ay: Double = 0.0
 
     var fx: Double = 0.0
     var fy: Double = 0.0
 
-    val G: Double = 5.0 // fake gravitational constant
+    var G: Double = 5.0 // fake gravitational constant
 
     val body = Circle(x, y, radius, Color.White)
 
@@ -55,5 +55,9 @@ class Body(var x: Double, var y: Double, var mass: Double, val radius: Double) {
 
         body.centerX() = x
         body.centerY() = y
+    }
+
+    def setG(newG: Double): Unit = {
+        this.G = newG
     }
 }
