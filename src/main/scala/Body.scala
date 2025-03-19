@@ -12,7 +12,7 @@ class Body(var x: Double, var y: Double, var mass: Double, val radius: Double) {
     var fx: Double = 0.0
     var fy: Double = 0.0
 
-    var G: Double = 5.0 // fake gravitational constant
+    var G: Double = 0.1 // fake gravitational constant
 
     val body = Circle(x, y, radius, Color.White)
 
