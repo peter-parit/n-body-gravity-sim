@@ -36,7 +36,9 @@ object Main extends JFXApp3 {
         // var bodies = ListBuffer(new Body(200, 200, 10e5, 10), new Body(440, 330, 10e5, 10), new Body(600, 700, 10e4, 10))
         var bodies: ListBuffer[Body] = ListBuffer()
 
-        for (_ <- 0 until 1000) {
+        // create n bodies to the screen
+        val NUM_BODIES = 100
+        for (_ <- 0 until NUM_BODIES) {
           val newBody = new Body(
             Math.random() * screenWidth,
             Math.random() * screenHeight,
@@ -47,18 +49,10 @@ object Main extends JFXApp3 {
           bodies.append(newBody)
         }
  
+        // starting of the animation on the screen
         var lastTime = 0L
         val timer = AnimationTimer { t =>
           if(lastTime > 0) {
-
-            // mouseEvent to add new bodies
-            // main.onMouseClicked = (me: MouseEvent) => {
-            //   for (i <- 0 until 1000) {
-            //     val newBody = new Body(me.x, me.y, 10e4, 10)
-            //     main.children.add(newBody.body)
-            //     bodies.append(newBody)
-            //   }
-            // }
 
             // update the positions of each body
             val elapsed = (t - lastTime) / 1e9
