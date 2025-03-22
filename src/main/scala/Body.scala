@@ -56,8 +56,4 @@ class Body(var x: Double, var y: Double, var mass: Double, val radius: Double) {
         body.centerX() = x
         body.centerY() = y
     }
-
-    def setG(newG: Double): Unit = {
-        this.G = newG
-    }
 }
