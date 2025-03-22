@@ -33,11 +33,12 @@ object Main extends JFXApp3 {
         val main = new Pane {
           style = "-fx-background-color: Black;"
         }
-        // var bodies = ListBuffer(new Body(200, 200, 10e5, 10), new Body(440, 330, 10e5, 10), new Body(600, 700, 10e4, 10))
-        var bodies: ListBuffer[Body] = ListBuffer()
+
 
         // create n bodies to the screen
-        val NUM_BODIES = 100
+        val NUM_BODIES = 1000
+
+        var bodies: ListBuffer[Body] = ListBuffer()
         for (_ <- 0 until NUM_BODIES) {
           val newBody = new Body(
             Math.random() * screenWidth,
