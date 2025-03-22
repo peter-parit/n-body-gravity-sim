@@ -36,7 +36,7 @@ object OptimizedSim extends JFXApp3 {
         }
 
         // create n bodies to the screen
-        val NUM_BODIES = 1000
+        val NUM_BODIES = 10
         val BODY_MASS = 10e4
         val RADIUS = 5
         val random = new Random(123) // set seed for reproducibility (potentially when evaluating the run-time)
@@ -53,8 +53,9 @@ object OptimizedSim extends JFXApp3 {
             quadtree.insert(body)
         })
 
+        // checking if the quadtree is being inserted correctly
         println("Width: " + screenWidth)
-        println("Height: "  + screenHeight)
+        println("Height: " + screenHeight)
         println((quadtree.topRightTree.topRightTree.topRightTree.body.get.x, quadtree.topRightTree.topRightTree.topRightTree.body.get.y))
 
         // start of simulation
