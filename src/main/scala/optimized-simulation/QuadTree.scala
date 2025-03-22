@@ -17,7 +17,7 @@ private class Boundary(var topLeft: Point, var bottomRight: Point) {
     }
 }
 
-class QuadTree(var boundary: Boundary, var body: Option[Body] = None, 
+class QuadTree(var boundary: Boundary, var body: Option[ParBody] = None, 
                    var topLeftTree: QuadTree = null, var topRightTree: QuadTree = null, 
                    var bottomLeftTree: QuadTree = null, var bottomRightTree: QuadTree = null) {
 
@@ -40,7 +40,7 @@ class QuadTree(var boundary: Boundary, var body: Option[Body] = None,
     }
 
     // insert a new node to the tree
-    def insert(body: Body): Boolean = {
+    def insert(body: ParBody): Boolean = {
 
         // check if out of bounds
         if(!boundary.isConfined(new Point(body.x, body.y))) then return false

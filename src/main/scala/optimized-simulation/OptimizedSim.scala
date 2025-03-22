@@ -36,20 +36,20 @@ object OptimizedSim extends JFXApp3 {
         }
 
         // create n bodies to the screen
-        val NUM_BODIES = 10
+        val NUM_BODIES = 1000
         val BODY_MASS = 10e4
         val RADIUS = 5
         val random = new Random(123) // set seed for reproducibility (potentially when evaluating the run-time)
 
-        val bodies: List[Body] = (0 until NUM_BODIES).map(_ => {
-            new Body(random.nextDouble() * screenWidth, random.nextDouble() * screenHeight, BODY_MASS, RADIUS)
+        val bodies: List[ParBody] = (0 until NUM_BODIES).map(_ => {
+            new ParBody(random.nextDouble() * screenWidth, random.nextDouble() * screenHeight, BODY_MASS, RADIUS)
         }).toList
         val boundary = new Boundary(new Point(0.0, 0.0), new Point(screenWidth, screenHeight))
         val quadtree = new QuadTree(boundary)
 
         // inserting each body into the screen & quadtree
         bodies.foreach(body => {
-            main.children.add(body.body)
+            main.children.add(body.parBody)
             quadtree.insert(body)
         })
 
@@ -58,7 +58,7 @@ object OptimizedSim extends JFXApp3 {
         println((quadtree.topRightTree.topRightTree.topRightTree.body.get.x, quadtree.topRightTree.topRightTree.topRightTree.body.get.y))
 
         // start of simulation
-        var lastTime = 0L
+        // var lastTime = 0L
         // val timer = AnimationTimer { t =>
         //   if(lastTime > 0) {
 

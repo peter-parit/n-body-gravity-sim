@@ -2,7 +2,7 @@ import scalafx.scene.shape.Circle
 import scalafx.scene.paint.Color
 import scala.collection.mutable.ListBuffer
 import scalafx.scene.input.KeyCode.Minus
-class Body(var x: Double, var y: Double, var mass: Double, val radius: Double) {
+class NaiveBody(var x: Double, var y: Double, var mass: Double, val radius: Double) {
 
     var vx: Double = 0.0
     var vy: Double = 0.0
@@ -14,9 +14,9 @@ class Body(var x: Double, var y: Double, var mass: Double, val radius: Double) {
 
     var G: Double = 0.1 // fake gravitational constant
 
-    val body = Circle(x, y, radius, Color.White)
+    val naiveBody = Circle(x, y, radius, Color.White)
 
-    def calculateForce(other: Body): (Double, Double) = {
+    def calculateForce(other: NaiveBody): (Double, Double) = {
         val dx = other.x - this.x
         val dy = other.y - this.y
         var r = math.sqrt(dx * dx + dy * dy)
@@ -33,7 +33,7 @@ class Body(var x: Double, var y: Double, var mass: Double, val radius: Double) {
         (Fx, Fy)
     }
 
-    def update(time: Double, bodies: ListBuffer[Body]): Unit = {
+    def update(time: Double, bodies: ListBuffer[NaiveBody]): Unit = {
         fx = 0
         fy = 0
 
@@ -53,7 +53,7 @@ class Body(var x: Double, var y: Double, var mass: Double, val radius: Double) {
         x += vx * time
         y += vy * time
 
-        body.centerX() = x
-        body.centerY() = y
+        naiveBody.centerX() = x
+        naiveBody.centerY() = y
     }
 }

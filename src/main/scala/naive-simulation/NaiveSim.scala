@@ -12,9 +12,9 @@ import scalafx.scene.input.MouseEvent
 import scalafx.Includes.*
 import scalafx.stage.Screen
 
-object Main extends JFXApp3 {
+object NaiveSim extends JFXApp3 {
 
-  // make a new body at (x, y) position
+  // make a new NaiveBody at (x, y) position
   def createCircle(x: Double, y: Double): Circle = {
     return Circle(x, y, 10, Color.White)
   }
@@ -25,7 +25,7 @@ object Main extends JFXApp3 {
     val screenHeight = screenBounds.height
     val screenWidth = screenBounds.width
     stage = new JFXApp3.PrimaryStage {
-      title = "N-Body Gravity Simulation"
+      title = "N-NaiveBody Gravity Simulation"
       maximized = true
       resizable = true
       
@@ -38,16 +38,16 @@ object Main extends JFXApp3 {
         // create n bodies to the screen
         val NUM_BODIES = 1000
 
-        var bodies: ListBuffer[Body] = ListBuffer()
+        var bodies: ListBuffer[NaiveBody] = ListBuffer()
         for (_ <- 0 until NUM_BODIES) {
-          val newBody = new Body(
+          val newNaiveBody = new NaiveBody(
             Math.random() * screenWidth,
             Math.random() * screenHeight,
             10e4,
             5
           )
-          main.children.add(newBody.body)
-          bodies.append(newBody)
+          main.children.add(newNaiveBody.naiveBody)
+          bodies.append(newNaiveBody)
         }
  
         // starting of the animation on the screen
@@ -55,7 +55,7 @@ object Main extends JFXApp3 {
         val timer = AnimationTimer { t =>
           if(lastTime > 0) {
 
-            // update the positions of each body
+            // update the positions of each NaiveBody
             val elapsed = (t - lastTime) / 1e9
 
             bodies.foreach { node =>
