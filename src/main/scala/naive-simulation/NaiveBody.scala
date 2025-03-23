@@ -12,7 +12,7 @@ class NaiveBody(var x: Double, var y: Double, var mass: Double, val radius: Doub
     var fx: Double = 0.0
     var fy: Double = 0.0
 
-    var G: Double = 0.1 // fake gravitational constant
+    var G: Double = 6.67e-11 // fake gravitational constant
 
     val naiveBody = Circle(x, y, radius, Color.White)
 
