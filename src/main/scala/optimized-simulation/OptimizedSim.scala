@@ -1,3 +1,5 @@
+package optimizedsimulation
+
 import scalafx.application.JFXApp3
 import scalafx.scene.Scene
 import scalafx.scene.control.Label
@@ -26,7 +28,7 @@ object OptimizedSim extends JFXApp3 {
     val screenHeight = screenBounds.height
     val screenWidth = screenBounds.width
     stage = new JFXApp3.PrimaryStage {
-      title = "N-Body Gravity Simulation"
+      title = "N-Body Parallel Gravity Simulation"
       maximized = true
       resizable = true
       
@@ -35,15 +37,29 @@ object OptimizedSim extends JFXApp3 {
           style = "-fx-background-color: Black;"
         }
 
-        // create n bodies to the screen
-        val NUM_BODIES = 10
-        val BODY_MASS = 10e4
-        val RADIUS = 5
+        // initializing variables
+        val NUM_BODIES = 10000
+        val BODY_MASS = 10e12
+        val G = 6.67e-11
+        val RADII = (0.5, 0.7).toList
+        val THETA = 1 // threshold for barnes hut algorithm
+        val EPSILON = 10 // softening length (prevents division by 0)
         val random = new Random(123) // set seed for reproducibility (potentially when evaluating the run-time)
+        val circleRadius = screenHeight / 2
+        val centersX = (screenWidth / 2, (screenWidth / 2) + 200).toList
+        val centersY = (screenHeight / 2, (screenHeight / 2) + 200).toList
 
+        // create n bodies to the screen
         val bodies: List[ParBody] = (0 until NUM_BODIES).map(_ => {
-            new ParBody(random.nextDouble() * screenWidth, random.nextDouble() * screenHeight, BODY_MASS, RADIUS)
-        }).toList
+          val angle = random.nextDouble() * 2 * Math.PI
+          val r = random.nextDouble() * circleRadius
+          new ParBody(
+            centersX(0) + r * Math.cos(angle),
+            centersY(0) + r * Math.sin(angle), 
+            BODY_MASS, 
+            RADII(random.nextInt(2)), 
+            G
+            )}).toList
         val boundary = new Boundary(new Point(0.0, 0.0), new Point(screenWidth, screenHeight))
         val quadtree = new QuadTree(boundary)
 
@@ -53,26 +69,28 @@ object OptimizedSim extends JFXApp3 {
             quadtree.insert(body)
         })
 
-        // checking if the quadtree is being inserted correctly
+        /*
+        checking if the quadtree is being inserted correctly
         println("Width: " + screenWidth)
         println("Height: " + screenHeight)
         println((quadtree.topRightTree.topRightTree.topRightTree.body.get.x, quadtree.topRightTree.topRightTree.topRightTree.body.get.y))
+        println("Center of mass.x: " + quadtree.topLeftTree.comX)
+        */
 
-        // start of simulation
-        // var lastTime = 0L
-        // val timer = AnimationTimer { t =>
-        //   if(lastTime > 0) {
+        // start of simulation  
+        var lastTime = 0L
+        val timer = AnimationTimer { t =>
+          if(lastTime > 0) {
 
-        //     // update the positions of each body
-        //     val elapsed = (t - lastTime) / 1e9
-
-        //     bodies.foreach { node =>
-        //       node.update(elapsed, bodies)
-        //     }
-        //   }
-        //   lastTime = t
-        // }
-        // timer.start()
+            // update the positions of each body
+            val elapsed = (t - lastTime) / 1e9
+            bodies.foreach(body => {
+              body.update(elapsed, quadtree, THETA, EPSILON)
+            })
+          }
+          lastTime = t
+        }
+        timer.start()
 
         root = main
       }
