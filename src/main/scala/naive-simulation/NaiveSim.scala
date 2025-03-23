@@ -25,7 +25,7 @@ object NaiveSim extends JFXApp3 {
     val screenHeight = screenBounds.height
     val screenWidth = screenBounds.width
     stage = new JFXApp3.PrimaryStage {
-      title = "N-NaiveBody Gravity Simulation"
+      title = "N-Body Naive Gravity Simulation"
       maximized = true
       resizable = true
       
@@ -36,15 +36,15 @@ object NaiveSim extends JFXApp3 {
 
 
         // create n bodies to the screen
-        val NUM_BODIES = 1000
+        val NUM_BODIES = 2000
 
         var bodies: ListBuffer[NaiveBody] = ListBuffer()
         for (_ <- 0 until NUM_BODIES) {
           val newNaiveBody = new NaiveBody(
             Math.random() * screenWidth,
             Math.random() * screenHeight,
-            10e4,
-            5
+            10e11,
+            2
           )
           main.children.add(newNaiveBody.naiveBody)
           bodies.append(newNaiveBody)
