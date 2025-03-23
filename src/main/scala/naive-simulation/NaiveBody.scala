@@ -2,7 +2,7 @@ import scalafx.scene.shape.Circle
 import scalafx.scene.paint.Color
 import scala.collection.mutable.ListBuffer
 import scalafx.scene.input.KeyCode.Minus
-class NaiveBody(var x: Double, var y: Double, var mass: Double, val radius: Double) {
+class NaiveBody(var x: Double, var y: Double, var mass: Double, val radius: Double, val G: Double) {
 
     var vx: Double = 0.0
     var vy: Double = 0.0
@@ -12,18 +12,12 @@ class NaiveBody(var x: Double, var y: Double, var mass: Double, val radius: Doub
     var fx: Double = 0.0
     var fy: Double = 0.0
 
-    var G: Double = 6.67e-11 // fake gravitational constant
-
     val naiveBody = Circle(x, y, radius, Color.White)
 
-    def calculateForce(other: NaiveBody): (Double, Double) = {
+    def calculateForce(other: NaiveBody, epsilon: Double): (Double, Double) = {
         val dx = other.x - this.x
         val dy = other.y - this.y
-        var r = math.sqrt(dx * dx + dy * dy)
-
-        // avoid r that is too small
-        val MIN_R = (this.radius + other.radius) * 2
-        if (r < MIN_R) then r = MIN_R
+        var r = math.sqrt(dx * dx + dy * dy + epsilon * epsilon)
 
         val F = (G * this.mass * other.mass) / math.pow(r, 2)
 
@@ -33,13 +27,12 @@ class NaiveBody(var x: Double, var y: Double, var mass: Double, val radius: Doub
         (Fx, Fy)
     }
 
-    def update(time: Double, bodies: ListBuffer[NaiveBody]): Unit = {
+    def update(time: Double, bodies: ListBuffer[NaiveBody], epsilon: Double): Unit = {
         fx = 0
         fy = 0
 
-        // TODO: Use barnes hut algorithm -> make parallel.
         for (other <- bodies if other != this) {
-            val (fx, fy) = calculateForce(other)
+            val (fx, fy) = calculateForce(other, epsilon)
             this.fx += fx
             this.fy += fy
         }
