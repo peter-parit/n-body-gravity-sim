@@ -8,10 +8,16 @@ lazy val root = project
 
     scalaVersion := scala3Version,
 
+    Compile / mainClass := Some("optimizedsimulation.OptimizedSim"),
+
     libraryDependencies += "org.scalameta" %% "munit" % "1.0.0" % Test,
 
     // scalafx
     libraryDependencies += "org.scalafx" %% "scalafx" % "21.0.0-R32",
+
+    // parallel collection
+    // libraryDependencies +=
+    // "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4",
 
     // adding java runtime options
     javaOptions ++= Seq(
