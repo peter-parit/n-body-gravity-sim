@@ -2,6 +2,10 @@ import scalafx.scene.shape.Circle
 import scalafx.scene.paint.Color
 import scala.collection.mutable.ListBuffer
 import scalafx.scene.input.KeyCode.Minus
+import scala.concurrent.{Future, Await}
+import scala.concurrent.duration.Duration
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class ParBody(var x: Double, var y: Double, var mass: Double, val radius: Double) {
 
     var vx: Double = 0.0
@@ -16,43 +20,59 @@ class ParBody(var x: Double, var y: Double, var mass: Double, val radius: Double
 
     val parBody = Circle(x, y, radius, Color.White)
 
-    def calculateForce(other: ParBody): (Double, Double) = {
-        val dx = other.x - this.x
-        val dy = other.y - this.y
-        var r = math.sqrt(dx * dx + dy * dy)
+    def calculateForce(tree: QuadTree, theta: Double, epsilon: Double): (Double, Double) = {
 
-        // avoid r that is too small
-        val MIN_R = (this.radius + other.radius) * 2
-        if (r < MIN_R) then r = MIN_R
+        // if no body or no quadrants, return default
+        if (tree.body.isEmpty && tree.topLeftTree == null) { (0.0, 0.0) }
 
-        val F = (G * this.mass * other.mass) / math.pow(r, 2)
+        // calculate d
+        val dx = tree.comX - this.x
+        val dy = tree.comY - this.y
+        var d = math.sqrt(dx * dx + dy * dy) + epsilon * epsilon // prevents division by 0
 
-        val Fx = F * (dx / r)
-        val Fy = F * (dy / r)
+        // if ratio s / d is in the threshold theta, calculate force
+        val s = tree.boundary.bottomRight.x - tree.boundary.topLeft.x
+        if (s / d < theta) {
+            val F = (G * this.mass * tree.totalMass) / (d * d)
 
-        (Fx, Fy)
+            val Fx = F * (dx / d)
+            val Fy = F * (dy / d)
+            (Fx, Fy)
+        } 
+        
+        // otherwise, recursion on children
+        else {
+            val futures = Seq(
+                Future { if (tree.topLeftTree != null) then calculateForce(tree.topLeftTree, theta, epsilon) else (0.0, 0.0) },
+                Future { if (tree.topRightTree != null) then calculateForce(tree.topRightTree, theta, epsilon) else (0.0, 0.0) },
+                Future { if (tree.bottomLeftTree != null) then calculateForce(tree.bottomLeftTree, theta, epsilon) else (0.0, 0.0) },
+                Future { if (tree.bottomRightTree != null) then calculateForce(tree.bottomRightTree, theta, epsilon) else (0.0, 0.0) }
+            )
+
+            // combine all forces
+            val results = Await.result(Future.sequence(futures), Duration.Inf)
+            results.reduce((Fx, Fy) => (Fx._1 + Fy._1, Fx._2 + Fy._2))
+        }
     }
 
-    def update(time: Double, bodies: ListBuffer[ParBody]): Unit = {
-        fx = 0
-        fy = 0
+    def update(time: Double, tree: QuadTree, theta: Double, epsilon: Double): Unit = {
+    
+        // uses the barnes hut implementation to calculate the force acting on this body
+        val (newFx, newFy) = this.calculateForce(tree, theta, epsilon)
+        fx = newFx
+        fy = newFx
 
-        // TODO: Use barnes hut algorithm -> make parallel.
-        for (other <- bodies if other != this) {
-            val (fx, fy) = calculateForce(other)
-            this.fx += fx
-            this.fy += fy
-        }
-
+        // update acceleration
         ax = fx / mass
         ay = fy / mass
 
+        // update velocity
         vx += ax * time
         vy += ay * time
 
+        // update position
         x += vx * time
         y += vy * time
-
         parBody.centerX() = x
         parBody.centerY() = y
     }
