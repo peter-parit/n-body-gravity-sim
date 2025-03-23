@@ -1,4 +1,6 @@
-private class Point(var x: Double, var y: Double) {
+package optimizedsimulation
+
+class Point(var x: Double, var y: Double) {
     
     // default constructor
     def this() = {
@@ -6,7 +8,7 @@ private class Point(var x: Double, var y: Double) {
     }
 }
 
-private class Boundary(var topLeft: Point, var bottomRight: Point) {
+class Boundary(var topLeft: Point, var bottomRight: Point) {
 
     // check if point is in boundary
     def isConfined(p: Point): Boolean = {
@@ -46,8 +48,8 @@ class QuadTree(var boundary: Boundary, var body: Option[ParBody] = None,
     // update the center of mass 
     def updateCOM(body: ParBody): Unit = {
 
-        comX += (totalMass * comX + body.mass * body.x) / (totalMass + body.mass)
-        comY += (totalMass * comY + body.mass * body.y) / (totalMass + body.mass)
+        comX = (totalMass * comX + body.mass * body.x) / (totalMass + body.mass)
+        comY = (totalMass * comY + body.mass * body.y) / (totalMass + body.mass)
 
         totalMass += body.mass
     }
@@ -56,17 +58,17 @@ class QuadTree(var boundary: Boundary, var body: Option[ParBody] = None,
     def insert(body: ParBody): Boolean = {
 
         // check if out of bounds
-        if(!boundary.isConfined(new Point(body.x, body.y))) then return false
+        if (!boundary.isConfined(new Point(body.x, body.y))) then return false
 
         // check if no point in quadrant and no children
-        if(this.body == None && topLeftTree == null) {
+        if (this.body == None && topLeftTree == null) {
             this.body = Some(body)
             updateCOM(body)
             return true
         }
 
         // check if no children but point exists, subdivide
-        if(topLeftTree == null) {
+        if (topLeftTree == null) {
             subdivide()
 
             val existingPoint = this.body.get
@@ -81,7 +83,7 @@ class QuadTree(var boundary: Boundary, var body: Option[ParBody] = None,
                     || bottomLeftTree.insert(body) || bottomRightTree.insert(body)
 
         // udpate center of mass if body is inserted
-        if(inserted) { updateCOM(body) }
+        if (inserted) { updateCOM(body) }
         
         return inserted
     }
