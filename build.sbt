@@ -15,13 +15,20 @@ lazy val root = project
     // scalafx
     libraryDependencies += "org.scalafx" %% "scalafx" % "21.0.0-R32",
 
+    libraryDependencies ++= Seq(
+      "org.openjfx" % "javafx-controls" % "21" classifier "win",
+      "org.openjfx" % "javafx-fxml" % "21" classifier "win",
+      "org.openjfx" % "javafx-base" % "21" classifier "win",
+      "org.openjfx" % "javafx-graphics" % "21" classifier "win"
+    ),
+
     // parallel collection
     // libraryDependencies +=
     // "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4",
 
     // adding java runtime options
     javaOptions ++= Seq(
-      "--module-path", "D:/MUIC/openjfx-21.0.6_windows-x64_bin-sdk/javafx-sdk-21.0.6/lib",
+      "--module-path", "${env:JAVAFX_HOME}/lib",
       "--add-modules", "javafx.controls,javafx.fxml"
     )
   )
