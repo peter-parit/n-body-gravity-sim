@@ -7,18 +7,19 @@ import scalafx.scene.input.KeyCode.Minus
 import scala.concurrent.{Future, Await}
 import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.collection.parallel.CollectionConverters.*
 
 class ParBody(var x: Double, var y: Double, var mass: Double, val radius: Double, val G: Double) {
 
-    var vx: Double = 0.0
-    var vy: Double = 0.0
-    var ax: Double = 0.0
-    var ay: Double = 0.0
-
-    var fx: Double = 0.0
-    var fy: Double = 0.0
+    val vel = Array(0.0, 0.0)
+    val acc = Array(0.0, 0.0)
+    val fc = Array(0.0, 0.0)
 
     val parBody = Circle(x, y, radius, Color.White)
+
+    // def getForces(tree: QuadTree, theta: Double, epsilon: Double): (Double, Double) = {
+        
+    // }
 
     def calculateForce(tree: QuadTree, theta: Double, epsilon: Double): (Double, Double) = {
 
@@ -42,29 +43,29 @@ class ParBody(var x: Double, var y: Double, var mass: Double, val radius: Double
         
         // otherwise, recursion on children
         else {
-            var totalx = 0.0
-            var totaly = 0.0
+            var totalX = 0.0
+            var totalY = 0.0
             if (tree.topLeftTree != null) {
                 val (fxx, fyy) = calculateForce(tree.topLeftTree, theta, epsilon)
-                totalx += fxx
-                totaly += fyy
+                totalX += fxx
+                totalY += fyy
             }
             if (tree.topRightTree != null) {
                 val (fxx, fyy) = calculateForce(tree.topRightTree, theta, epsilon)
-                totalx += fxx
-                totaly += fyy
+                totalX += fxx
+                totalY += fyy
             }
             if (tree.bottomLeftTree != null) {
                 val (fxx, fyy) = calculateForce(tree.bottomLeftTree, theta, epsilon)
-                totalx += fxx
-                totaly += fyy
+                totalX += fxx
+                totalY += fyy
             }
             if (tree.bottomRightTree != null) {
                 val (fxx, fyy) = calculateForce(tree.bottomRightTree, theta, epsilon)
-                totalx += fxx
-                totaly += fyy
+                totalX += fxx
+                totalY += fyy
             }
-            (totalx, totaly)
+            (totalX, totalY)
         }
     }
 
@@ -72,20 +73,20 @@ class ParBody(var x: Double, var y: Double, var mass: Double, val radius: Double
     
         // uses the barnes hut implementation to calculate the force acting on this body
         val (newFx, newFy) = this.calculateForce(tree, theta, epsilon)
-        fx = newFx
-        fy = newFy
+        fc(0) = newFx
+        fc(1) = newFy
 
         // update acceleration
-        ax = fx / mass
-        ay = fy / mass
+        acc(0) = fc(0) / mass
+        acc(1) = fc(1) / mass
 
         // update velocity
-        vx += ax * time
-        vy += ay * time
+        vel(0) += acc(0) * time
+        vel(1) += acc(1) * time
 
         // update position
-        x += vx * time
-        y += vy * time
+        x += vel(0) * time
+        y += vel(1) * time
         parBody.centerX() = x
         parBody.centerY() = y
     }

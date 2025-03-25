@@ -14,6 +14,7 @@ import scalafx.scene.input.MouseEvent
 import scalafx.Includes.*
 import scalafx.stage.Screen
 import scala.util.Random
+import scala.collection.parallel.CollectionConverters.*
 
 object OptimizedSim extends JFXApp3 {
 
@@ -39,25 +40,25 @@ object OptimizedSim extends JFXApp3 {
 
         // initializing variables
         val NUM_BODIES = 10000
-        val BODY_MASS = 10e12
+        val BODY_MASS = 10e11
         val G = 6.67e-11
-        val RADII = (0.5, 0.7).toList
-        val THETA = 1 // threshold for barnes hut algorithm
+        val RADII = (0.3, 0.5, 0.7).toList
+        val THETA = 1.0 // threshold for barnes hut algorithm
         val EPSILON = 10 // softening length (prevents division by 0)
         val random = new Random(123) // set seed for reproducibility (potentially when evaluating the run-time)
-        val circleRadius = screenHeight / 2
-        val centersX = (screenWidth / 2, (screenWidth / 2) + 200).toList
-        val centersY = (screenHeight / 2, (screenHeight / 2) + 200).toList
+        val circleRadius = screenHeight / 3
+        val centersX = ((screenWidth / 2) - (screenWidth / 12), (screenWidth / 2) + (screenWidth / 12)).toList
+        // val centersY = (screenHeight / 2, (screenHeight / 2) + 200).toList
 
         // create n bodies to the screen
         val bodies: List[ParBody] = (0 until NUM_BODIES).map(_ => {
           val angle = random.nextDouble() * 2 * Math.PI
           val r = random.nextDouble() * circleRadius
           new ParBody(
-            centersX(0) + r * Math.cos(angle),
-            centersY(0) + r * Math.sin(angle), 
+            centersX(random.nextInt(2)) + r * Math.cos(angle),
+            (screenHeight / 2) + r * Math.sin(angle), 
             BODY_MASS, 
-            RADII(random.nextInt(2)), 
+            RADII(random.nextInt(3)), 
             G
             )}).toList
         val boundary = new Boundary(new Point(0.0, 0.0), new Point(screenWidth, screenHeight))

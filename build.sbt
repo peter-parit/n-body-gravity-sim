@@ -23,8 +23,8 @@ lazy val root = project
     ),
 
     // parallel collection
-    // libraryDependencies +=
-    // "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4",
+    libraryDependencies +=
+    "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4",
 
     // adding java runtime options
     javaOptions ++= Seq(

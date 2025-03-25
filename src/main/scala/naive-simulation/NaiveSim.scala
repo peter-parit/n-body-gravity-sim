@@ -37,13 +37,13 @@ object NaiveSim extends JFXApp3 {
 
 
         // create n bodies to the screen
-        val NUM_BODIES = 2000
+        val NUM_BODIES = 1000
         val BODY_MASS = 10e11
-        val RADIUS = 1
+        val RADII = (0.3, 0.5, 0.7).toList
         val EPSILON = 10
         val G = 6.67e-11
         val random = new Random(123) // set seed for reproducibility (potentially when evaluating the run-time)
-        val circleRadius = screenHeight / 2
+        val circleRadius = screenHeight / 3
 
         var bodies: ListBuffer[NaiveBody] = ListBuffer()
         for (_ <- 0 until NUM_BODIES) {
@@ -54,7 +54,7 @@ object NaiveSim extends JFXApp3 {
             (screenWidth / 2) + r * Math.cos(angle),
             (screenHeight / 2) + r * Math.sin(angle), 
             BODY_MASS,
-            RADIUS,
+            RADII(random.nextInt(3)),
             G
           )
           main.children.add(newNaiveBody.naiveBody)
