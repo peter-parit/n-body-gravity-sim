@@ -12,6 +12,7 @@ import scalafx.scene.input.MouseEvent
 import scalafx.Includes.*
 import scalafx.stage.Screen
 import scala.util.Random
+// import scala.collection.parallel.CollectionConverters.*
 
 object NaiveSim extends JFXApp3 {
 
@@ -46,7 +47,7 @@ object NaiveSim extends JFXApp3 {
         val circleRadius = screenHeight / 3
 
         var bodies: ListBuffer[NaiveBody] = ListBuffer()
-        for (_ <- 0 until NUM_BODIES) {
+        for (_ <- 0.until(NUM_BODIES)) {
           val angle = random.nextDouble() * 2 * Math.PI
           val r = random.nextDouble() * circleRadius
 

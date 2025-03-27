@@ -21,7 +21,7 @@ class Boundary(var topLeft: Point, var bottomRight: Point) {
 
 class QuadTree(var boundary: Boundary, var body: Option[ParBody] = None, 
                    var topLeftTree: QuadTree = null, var topRightTree: QuadTree = null, 
-                   var bottomLeftTree: QuadTree = null, var bottomRightTree: QuadTree = null) {
+                   var bottomLeftTree: QuadTree = null, var bottomRightTree: QuadTree = null, val depth: Int = 0) {
 
     var comX = 0.0
     var comY = 0.0
@@ -39,10 +39,14 @@ class QuadTree(var boundary: Boundary, var body: Option[ParBody] = None,
         val midY = topLeft.y + length
 
         // create quadrants with new boundaries
-        topLeftTree = new QuadTree(new Boundary(new Point(topLeft.x, topLeft.y), new Point(midX, midY)))
-        topRightTree = new QuadTree(new Boundary(new Point(midX, topLeft.y), new Point(bottomRight.x, midY)))
-        bottomLeftTree = new QuadTree(new Boundary(new Point(topLeft.x, midY), new Point(midX, bottomRight.y)))
-        bottomRightTree = new QuadTree(new Boundary(new Point(midX, midY), new Point(bottomRight.x, bottomRight.y)))
+        topLeftTree = new QuadTree(new Boundary(new Point(topLeft.x, topLeft.y), new Point(midX, midY)),
+        None, null, null, null, null, depth + 1)
+        topRightTree = new QuadTree(new Boundary(new Point(midX, topLeft.y), new Point(bottomRight.x, midY)),
+        None, null, null, null, null, depth + 1)
+        bottomLeftTree = new QuadTree(new Boundary(new Point(topLeft.x, midY), new Point(midX, bottomRight.y)),
+        None, null, null, null, null, depth + 1)
+        bottomRightTree = new QuadTree(new Boundary(new Point(midX, midY), new Point(bottomRight.x, bottomRight.y)),
+        None, null, null, null, null, depth + 1)
     }
 
     // update the center of mass 
@@ -70,7 +74,7 @@ class QuadTree(var boundary: Boundary, var body: Option[ParBody] = None,
         // check if no children but point exists, subdivide
         if (topLeftTree == null) {
             subdivide()
-
+            
             val existingPoint = this.body.get
             this.body = None
 
