@@ -14,6 +14,8 @@ import scalafx.scene.input.MouseEvent
 import scalafx.Includes.*
 import scalafx.stage.Screen
 import scala.util.Random
+import scala.collection.parallel.CollectionConverters._
+import scalafx.application.Platform
 
 object OptimizedSim extends JFXApp3 {
 
@@ -38,19 +40,18 @@ object OptimizedSim extends JFXApp3 {
         }
 
         // initializing variables
-        val NUM_BODIES = 5000
-        val BODY_MASS = 10e11
+        val NUM_BODIES = 10
+        val BODY_MASS = 10e15
         val G = 6.67e-11
-        val RADII = (0.5, 0.8, 1.0).toList
+        val RADII = (5, 10, 15).toList
         val THETA = 1.0 // threshold for barnes hut algorithm
         val EPSILON = 10 // softening length (prevents division by 0)
         val random = new Random(123) // set seed for reproducibility (potentially when evaluating the run-time)
         val circleRadius = screenHeight / 3
         val centersX = ((screenWidth / 2) - (screenWidth / 8), (screenWidth / 2) + (screenWidth / 8)).toList
-        // val centersY = (screenHeight / 2, (screenHeight / 2) + 200).toList
 
         // create n bodies to the screen
-        val bodies: List[ParBody] = (0.until(NUM_BODIES)).map(_ => {
+        val bodies = (0.until(NUM_BODIES)).map(_ => {
           val angle = random.nextDouble() * 2 * Math.PI
           val r = random.nextDouble() * circleRadius
           new ParBody(
@@ -59,34 +60,60 @@ object OptimizedSim extends JFXApp3 {
             BODY_MASS, 
             RADII(random.nextInt(3)), 
             G
-            )}).toList
-        val boundary = new Boundary(new Point(0.0, 0.0), new Point(screenWidth, screenHeight))
-        val quadtree = new QuadTree(boundary)
+            )}).toVector
 
         // inserting each body into the screen & quadtree
-        bodies.foreach(body => {
-            main.children.add(body.parBody)
-            quadtree.insert(body)
-        })
+        Platform.runLater {
+          bodies.foreach(body => { main.children.add(body.parBody) })
+        }
 
-        /*
-        checking if the quadtree is being inserted correctly
-        println("Width: " + screenWidth)
-        println("Height: " + screenHeight)
-        println((quadtree.topRightTree.topRightTree.topRightTree.body.get.x, quadtree.topRightTree.topRightTree.topRightTree.body.get.y))
-        println("Center of mass.x: " + quadtree.topLeftTree.comX)
-        */
+        // fps counter
+        val fpsLabel = new Label("FPS: 0")
+        fpsLabel.setTextFill(Color.White)
+        main.children.add(fpsLabel)
 
-        // start of simulation  
+        // init variables
         var lastTime = 0L
+        var frameCount = 0
+        var lastFpsTime = 0L
+
+        // start of simulation
         val timer = AnimationTimer { t =>
           if(lastTime > 0) {
 
+            // update fps
+            if (t - lastFpsTime > 1e9) {
+              fpsLabel.text = s"FPS: $frameCount | Bodies: $NUM_BODIES"
+              frameCount = 0
+              lastFpsTime = t
+            }
+            frameCount += 1
+
+            // make quadtree for each body so no values are shared
+            val boundary = new Boundary(new Point(0.0, 0.0), new Point(screenWidth, screenHeight))
+            val tree = new QuadTree(boundary)
+            bodies.foreach(tree.insert)
+
             // update the positions of each body
             val elapsed = (t - lastTime) / 1e9
-            bodies.foreach(body => {
-              body.update(elapsed, quadtree, THETA, EPSILON)
-            })
+            
+            // update bodies in parallel
+            val updatedBodies = bodies.par.map { body =>
+              val (x, y) = {
+                val (fx, fy) = body.calculateForce(tree, THETA, EPSILON)
+                body.updatePhysics(elapsed, fx, fy) 
+                (body.x, body.y)
+              }
+              (body, x, y)
+            }.seq // convert to seq for FX thread
+
+            // update through FX thread 
+            Platform.runLater {
+              updatedBodies.foreach { case (body, x, y) =>
+                body.parBody.centerX = x
+                body.parBody.centerY = y
+              }
+            }
           }
           lastTime = t
         }
