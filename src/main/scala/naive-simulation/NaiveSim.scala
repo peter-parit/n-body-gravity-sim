@@ -38,13 +38,14 @@ object NaiveSim extends JFXApp3 {
 
 
         // create n bodies to the screen
-        val NUM_BODIES = 1000
-        val BODY_MASS = 10e11
-        val RADII = (0.3, 0.5, 0.7).toList
+        val NUM_BODIES = 10
+        val BODY_MASS = 10e15
+        val RADII = (5, 10, 15).toList
         val EPSILON = 10
         val G = 6.67e-11
         val random = new Random(123) // set seed for reproducibility (potentially when evaluating the run-time)
         val circleRadius = screenHeight / 3
+        val centersX = ((screenWidth / 2) - (screenWidth / 8), (screenWidth / 2) + (screenWidth / 8)).toList
 
         var bodies: ListBuffer[NaiveBody] = ListBuffer()
         for (_ <- 0.until(NUM_BODIES)) {
@@ -52,7 +53,7 @@ object NaiveSim extends JFXApp3 {
           val r = random.nextDouble() * circleRadius
 
           val newNaiveBody = new NaiveBody(
-            (screenWidth / 2) + r * Math.cos(angle),
+            centersX(random.nextInt(2)) + r * Math.cos(angle),
             (screenHeight / 2) + r * Math.sin(angle), 
             BODY_MASS,
             RADII(random.nextInt(3)),
@@ -62,10 +63,27 @@ object NaiveSim extends JFXApp3 {
           bodies.append(newNaiveBody)
         }
  
-        // starting of the animation on the screen
+        // fps counter
+        val fpsLabel = new Label("FPS: 0")
+        fpsLabel.setTextFill(Color.White)
+        main.children.add(fpsLabel)
+
+        // init variables
         var lastTime = 0L
+        var frameCount = 0
+        var lastFpsTime = 0L
+
+        // starting of the animation on the screen
         val timer = AnimationTimer { t =>
           if(lastTime > 0) {
+
+            // update fps
+            if (t - lastFpsTime > 1e9) {
+              fpsLabel.text = s"FPS: $frameCount | Bodies: $NUM_BODIES"
+              frameCount = 0
+              lastFpsTime = t
+            }
+            frameCount += 1
 
             // update the positions of each NaiveBody
             val elapsed = (t - lastTime) / 1e9
