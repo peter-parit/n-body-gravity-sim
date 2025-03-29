@@ -17,6 +17,7 @@ class ParBody(var x: Double, var y: Double, var mass: Double, val radius: Double
 
     val parBody = Circle(x, y, radius, Color.White)
 
+    // recursively calculate forces in each tree based on barnes-hut's approach
     def calculateForce(tree: QuadTree, theta: Double, epsilon: Double): (Double, Double) = {
             
         // if no body or no quadrants, return default
@@ -25,9 +26,9 @@ class ParBody(var x: Double, var y: Double, var mass: Double, val radius: Double
         // calculate d
         val dx = tree.comX - this.x
         val dy = tree.comY - this.y
-        var d = math.sqrt(dx * dx + dy * dy + epsilon * epsilon)  // prevents division by 0
+        var d = math.sqrt(dx * dx + dy * dy + epsilon * epsilon)  // epsilon prevents division by 0
 
-        // if ratio s / d is in the threshold theta, calculate force
+        // if ratio s / d is in the barnes-hut threshold theta, calculate force
         val s = tree.boundary.bottomRight.x - tree.boundary.topLeft.x
         if (s / d < theta) {
             val F = (G * this.mass * tree.totalMass) / (d * d)
@@ -61,6 +62,7 @@ class ParBody(var x: Double, var y: Double, var mass: Double, val radius: Double
                 totalX += fxx
                 totalY += fyy
             }
+            
             (totalX, totalY)
         }
     }
