@@ -1,25 +1,17 @@
+package naivesimulation
+
 import scalafx.application.JFXApp3
 import scalafx.scene.Scene
 import scalafx.scene.control.Label
-import scalafx.scene.layout.StackPane
 import scalafx.scene.paint.Color
-import scalafx.scene.shape.Circle
 import scalafx.animation.AnimationTimer
-import scalafx.collections.ObservableBuffer
 import scala.collection.mutable.ListBuffer
 import scalafx.scene.layout.Pane
-import scalafx.scene.input.MouseEvent
-import scalafx.Includes.*
 import scalafx.stage.Screen
 import scala.util.Random
-// import scala.collection.parallel.CollectionConverters.*
+import scalafx.scene.text.Font
 
 object NaiveSim extends JFXApp3 {
-
-  // make a new NaiveBody at (x, y) position
-  def createCircle(x: Double, y: Double): Circle = {
-    return Circle(x, y, 10, Color.White)
-  }
 
   // main app window
   override def start(): Unit = {
@@ -38,9 +30,9 @@ object NaiveSim extends JFXApp3 {
 
 
         // create n bodies to the screen
-        val NUM_BODIES = 10
-        val BODY_MASS = 10e15
-        val RADII = (5, 10, 15).toList
+        val NUM_BODIES = 50000
+        val BODY_MASS = 10e10
+        val RADII = (.2,.4,.6).toList
         val EPSILON = 10
         val G = 6.67e-11
         val random = new Random(123) // set seed for reproducibility (potentially when evaluating the run-time)
@@ -65,6 +57,7 @@ object NaiveSim extends JFXApp3 {
  
         // fps counter
         val fpsLabel = new Label("FPS: 0")
+        fpsLabel.font = Font.font(24)
         fpsLabel.setTextFill(Color.White)
         main.children.add(fpsLabel)
 
@@ -79,7 +72,7 @@ object NaiveSim extends JFXApp3 {
 
             // update fps
             if (t - lastFpsTime > 1e9) {
-              fpsLabel.text = s"FPS: $frameCount | Bodies: $NUM_BODIES"
+              fpsLabel.text = s"FPS: ${frameCount - 1} | Bodies: $NUM_BODIES"
               frameCount = 0
               lastFpsTime = t
             }
