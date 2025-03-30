@@ -1,7 +1,9 @@
+package naivesimulation
+
 import scalafx.scene.shape.Circle
 import scalafx.scene.paint.Color
 import scala.collection.mutable.ListBuffer
-import scalafx.scene.input.KeyCode.Minus
+
 class NaiveBody(var x: Double, var y: Double, var mass: Double, val radius: Double, val G: Double) {
 
     var vx: Double = 0.0

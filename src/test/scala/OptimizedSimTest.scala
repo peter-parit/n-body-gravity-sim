@@ -1,7 +1,6 @@
 import optimizedsimulation._
 import naivesimulation._
 import scala.util.Random
-import scala.collection.parallel.CollectionConverters._
 import scala.concurrent.Future
 import scala.concurrent.Await
 import scala.concurrent.duration.*

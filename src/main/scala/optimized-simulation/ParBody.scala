@@ -2,12 +2,6 @@ package optimizedsimulation
 
 import scalafx.scene.shape.Circle
 import scalafx.scene.paint.Color
-import scala.collection.mutable.ListBuffer
-import scalafx.scene.input.KeyCode.Minus
-import scala.concurrent.{Future, Await}
-import scala.concurrent.duration.Duration
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.collection.parallel.CollectionConverters._
 
 class ParBody(var x: Double, var y: Double, var mass: Double, val radius: Double, val G: Double) {
 
