@@ -1,4 +1,4 @@
-import optimizedsimulation.*
+import barneshut._
 
 object QuadTreeTest {
     def main(args: Array[String]): Unit = {

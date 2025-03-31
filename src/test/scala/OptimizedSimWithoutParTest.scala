@@ -6,7 +6,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.*
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object OptimizedSimTest {
+object OptimizedSimWithoutParTest {
 
     def run(n: Int): Double = {
         // constants
@@ -48,17 +48,13 @@ object OptimizedSimTest {
             val boundary = new Boundary(new Point(0.0, 0.0), new Point(screenWidth, screenHeight))
             val tree = new QuadTree(boundary)
             bodies.foreach(tree.insert)
-
-            // Ensure all updates are done before moving on
-            val futures = bodies.map { body =>
-                Future {
-                    val (fx, fy) = body.calculateForce(tree, THETA, EPSILON)
-                    body.updatePhysics(elapsed, fx, fy)
-                }
+            
+            // update bodies and position
+            bodies.map { body =>
+              val (fx, fy) = body.calculateForce(tree, THETA, EPSILON)
+              body.updatePhysics(elapsed, fx, fy)
+              body.updatePosition()
             }
-
-            // ensuring parallel finishes before returning
-            Await.result(Future.sequence(futures), Duration.Inf)
 
             counter += 1
             lastTime = System.nanoTime()
