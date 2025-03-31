@@ -1,4 +1,4 @@
-package optimizedsimulation
+package barneshut
 
 import scalafx.scene.shape.Circle
 import scalafx.scene.paint.Color
@@ -79,5 +79,11 @@ class ParBody(var x: Double, var y: Double, var mass: Double, val radius: Double
         // position (the position on the screen will be updated in the simulation)
         x += vel(0)*time
         y += vel(1)*time
+    }
+
+    // update position
+    def updatePosition(): Unit = {
+        this.parBody.centerX = this.x
+        this.parBody.centerY = this.y
     }
 }

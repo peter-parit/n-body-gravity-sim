@@ -1,4 +1,4 @@
-package optimizedsimulation
+package barneshut
 
 class Point(var x: Double, var y: Double) {
     

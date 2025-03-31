@@ -1,4 +1,4 @@
-package optimizedsimulation
+package barneshut
 
 import scalafx.application.JFXApp3
 import scalafx.scene.Scene
@@ -14,7 +14,7 @@ import scala.concurrent.{Future, Await}
 import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object OptimizedSim extends JFXApp3 {
+object BarnesHutSimulation extends JFXApp3 {
 
   // main app window
   override def start(): Unit = {
@@ -35,7 +35,7 @@ object OptimizedSim extends JFXApp3 {
         val NUM_BODIES = 50000
         val BODY_MASS = 10e10
         val G = 6.67e-11
-        val RADII = (.1,.2,.3).toList
+        val RADII = (.2,.4,.6).toList
         val THETA = 1.0 // threshold for barnes hut algorithm
         val EPSILON = 10 // softening length (prevents division by 0)
         val random = new Random(123) // set seed for reproducibility (potentially when evaluating the run-time)
