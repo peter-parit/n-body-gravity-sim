@@ -8,7 +8,7 @@ lazy val root = project
 
     scalaVersion := scala3Version,
 
-    Compile / mainClass := Some("optimizedsimulation.OptimizedSim"),
+    Compile / mainClass := Some("barneshut.BarnesHutSim"),
 
     libraryDependencies += "org.scalameta" %% "munit" % "1.0.0" % Test,
 

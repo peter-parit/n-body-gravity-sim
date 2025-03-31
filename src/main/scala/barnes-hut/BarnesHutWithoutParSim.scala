@@ -14,7 +14,7 @@ import scala.concurrent.{Future, Await}
 import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext.Implicits.global
 
-object BarnesHutWithoutParSimulation extends JFXApp3 {
+object BarnesHutWithoutParSim extends JFXApp3 {
 
   // main app window
   override def start(): Unit = {
