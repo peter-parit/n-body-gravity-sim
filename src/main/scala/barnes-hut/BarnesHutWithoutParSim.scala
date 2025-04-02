@@ -22,7 +22,7 @@ object BarnesHutWithoutParSim extends JFXApp3 {
     val screenHeight = screenBounds.height
     val screenWidth = screenBounds.width
     stage = new JFXApp3.PrimaryStage {
-      title = "N-Body Parallel Gravity Simulation"
+      title = "N-Body Parallel Barnes-Hut Gravity Simulation"
       maximized = true
       resizable = true
       
