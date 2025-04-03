@@ -1,6 +1,8 @@
 # N-body Gravity Simulation
- 
+
 ## Overview and Summary of Project Results
+
+https://github.com/user-attachments/assets/3b6622fe-dfea-4c33-b69b-e2719b4a2426
 
 This n-body simulation will focus on simulating gravitational forces on n-objects on a 2D-plane. The purpose is to provide insights on the improved performance and run-time speed between the $O(n^2)$ naive approach to the $O(n\log n)$ Barnes-Hut approach. The latter further utilizes a QuadTree data structure, along with concurrency such as scala's own Futures. ScalaFX is further used to visualize and simulate the programs.
 
